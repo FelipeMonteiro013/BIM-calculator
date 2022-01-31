@@ -1,8 +1,12 @@
+import 'package:bmi_calculator/calculate_brain.dart';
+import 'package:bmi_calculator/components/buttom_botton.dart';
+import 'package:bmi_calculator/components/icon_content.dart';
+import 'package:bmi_calculator/components/rounded_icon_buttom.dart';
 import 'package:bmi_calculator/constants.dart';
-import 'package:bmi_calculator/reusable_card.dart';
+import 'package:bmi_calculator/components/reusable_card.dart';
+import 'package:bmi_calculator/screens/result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'icon_content.dart';
 
 enum Gender {
   male,
@@ -119,89 +123,110 @@ class _InputPageState extends State<InputPage> {
                 Expanded(
                   child: ReusableCard(
                     color: kActiveColor,
-                    cardChild: IncrementableCard('WEIGHT'),
+                    cardChild: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'WEIGHT',
+                          style: kLabelStyle,
+                        ),
+                        Text(
+                          weight.toString(),
+                          style: kLabelNumberStyle,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RoundedIconButtom(
+                              icon: FontAwesomeIcons.minus,
+                              onPressed: () {
+                                setState(() {
+                                  weight--;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 10.0,
+                            ),
+                            RoundedIconButtom(
+                              icon: FontAwesomeIcons.plus,
+                              onPressed: () {
+                                setState(() {
+                                  weight++;
+                                });
+                              },
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Expanded(
                   child: ReusableCard(
                     color: kActiveColor,
-                    cardChild: IncrementableCard('AGE'),
+                    cardChild: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'AGE',
+                          style: kLabelStyle,
+                        ),
+                        Text(
+                          age.toString(),
+                          style: kLabelNumberStyle,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RoundedIconButtom(
+                              icon: FontAwesomeIcons.minus,
+                              onPressed: () {
+                                setState(() {
+                                  age--;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 10.0,
+                            ),
+                            RoundedIconButtom(
+                              icon: FontAwesomeIcons.plus,
+                              onPressed: () {
+                                setState(() {
+                                  age++;
+                                });
+                              },
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          Container(
-            color: kBottmContainerColor,
-            width: double.infinity,
-            height: KbottomContainerHeight,
-            margin: EdgeInsets.only(top: 10.0),
-          )
+          BottomButton(
+            title: 'CALCULATE',
+            onTap: () {
+              CalculateBrain calc =
+                  CalculateBrain(weight: weight, height: height);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: ((context) => ResultPage(
+                        result: calc.getCalculateBMI(),
+                        resultText: calc.getResult(),
+                        resultInformation: calc.getResultInformation(),
+                      )),
+                ),
+              );
+            },
+          ),
         ],
       ),
-    );
-  }
-
-  Column IncrementableCard(String title) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          title,
-          style: kLabelStyle,
-        ),
-        Text(
-          title == 'WEIGHT' ? weight.toString() : age.toString(),
-          style: kLabelNumberStyle,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RoundedIconButtom(
-              icon: FontAwesomeIcons.minus,
-              onPressed: () {
-                setState(() {
-                  title == 'WEIGHT' ? weight-- : age--;
-                });
-              },
-            ),
-            SizedBox(
-              width: 10.0,
-            ),
-            RoundedIconButtom(
-              icon: FontAwesomeIcons.plus,
-              onPressed: () {
-                setState(() {
-                  title == 'WEIGHT' ? weight++ : age++;
-                });
-              },
-            ),
-          ],
-        )
-      ],
-    );
-  }
-}
-
-class RoundedIconButtom extends StatelessWidget {
-  // const RoundedIconButtom({ Key? key }) : super(key: key);
-  RoundedIconButtom({this.icon, this.onPressed});
-
-  final IconData icon;
-  final Function onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return RawMaterialButton(
-      child: Icon(icon),
-      shape: CircleBorder(),
-      fillColor: Color(0xFF4c4f5e),
-      elevation: 6.0,
-      constraints: BoxConstraints.tightFor(
-        width: 56.0,
-        height: 56.0,
-      ),
-      onPressed: onPressed,
     );
   }
 }
